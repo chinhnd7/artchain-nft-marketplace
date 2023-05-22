@@ -1,7 +1,7 @@
 /*
-* @chinhnd7
-*/
-const {run} = require("hardhat")
+ * @chinhnd7
+ */
+const { run } = require("hardhat")
 
 const verify = async function verify(contractAddress, args) {
     console.log("Verifying contract...")
@@ -12,11 +12,11 @@ const verify = async function verify(contractAddress, args) {
         })
     } catch (e) {
         if (e.message.toLowerCase().includes("already verifyed")) {
-            console.log("Already Verifed!")
+            console.log("Already Verifyed!")
         } else {
             console.log(e)
         }
     }
 }
 
-module.exports = {verify}
+module.exports = { verify }
