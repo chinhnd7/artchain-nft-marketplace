@@ -9,6 +9,8 @@ contract BasicNft is ERC721 {
         "ipfs://bafybeig37ioir76s7mg5oobetncojcm3c3hxasyd4rvid4jqhy4gkaheg4/?filename=0-PUG.json";
     uint256 private s_tokenCounter;
 
+    event DogMinted(uint256 indexed tokenId);
+
     // Token name is Dogie, token symbol is DOG
     constructor() ERC721("Dogie", "DOG") {
         s_tokenCounter = 0;
@@ -16,6 +18,7 @@ contract BasicNft is ERC721 {
 
     function mintNft() public {
         _safeMint(msg.sender, s_tokenCounter);
+        emit DogMinted(s_tokenCounter);
         s_tokenCounter = s_tokenCounter + 1;
     }
 
