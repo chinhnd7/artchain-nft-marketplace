@@ -9,7 +9,7 @@ async function mintAndList() {
     console.log("Minting...")
     const mintTx = await randomNft.mintNft()
     const mintTxReceipt = await mintTx.wait(1)
-    const tokenId = mintTxReceipt.events[0].args.tokenId // Event DogMinted
+    const tokenId = mintTxReceipt.events[0].args.tokenId // Event NFTMinted
 
     console.log("Approving Nft...")
     const approvalTx = await basicNft.approve(nftMarketplace.address, tokenId)
