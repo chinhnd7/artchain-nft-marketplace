@@ -4,10 +4,10 @@ const PRICE = ethers.utils.parseEther("0.1")
 
 async function mintAndList() {
     const nftMarketplace = await ethers.getContract("NftMarketplace")
-    const basicNft = await ethers.getContract("BasicNft")
+    const randomNft = await ethers.getContract("RandomIpfsNft")
 
     console.log("Minting...")
-    const mintTx = await basicNft.mintNft()
+    const mintTx = await randomNft.mintNft()
     const mintTxReceipt = await mintTx.wait(1)
     const tokenId = mintTxReceipt.events[0].args.tokenId // Event DogMinted
 
@@ -16,7 +16,7 @@ async function mintAndList() {
     await approvalTx.wait(1)
 
     console.log("Listing NFT...")
-    const tx = await nftMarketplace.listItem(basicNft.address, tokenId, PRICE)
+    const tx = await nftMarketplace.listItem(randomNft.address, tokenId, PRICE)
     await tx.wait(1)
     console.log("Listed!")
 }

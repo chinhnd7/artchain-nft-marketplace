@@ -57,7 +57,7 @@ module.exports = {
         ],
     },
     etherscan: {
-        apiKey: ETHERSCAN_API_KEY,
+        apiKey: MUMBAI_API_KEY,
     },
     gasReporter: {
         enabled: true,
