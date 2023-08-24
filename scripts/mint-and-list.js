@@ -1,6 +1,6 @@
 const { ethers } = require("hardhat")
 
-// const PRICE = ethers.utils.parseEther("0.01") // ethers v5
+const PRICE = ethers.parseEther("0.05") // for listing on marketplace
 
 async function mintAndList() {
     const nftMarketplace = await ethers.getContract("NftMarketplace")
@@ -9,7 +9,6 @@ async function mintAndList() {
 
     // Random IPFS NFT
     const randomIpfsNft = await ethers.getContract("RandomIpfsNft", deployer)
-    console.log(randomIpfsNft)
     const mintFee = await randomIpfsNft.getMintFee()
     const randomIpfsNftMintTx = await randomIpfsNft.requestNft({ value: mintFee.toString() })
     const randomIpfsNftMintTxReceipt = await randomIpfsNftMintTx.wait(1)
@@ -24,12 +23,14 @@ async function mintAndList() {
         })
     })
 
+    const tokenId = tokenCounter
+
     console.log("Approving Nft...")
-    const approvalTx = await randomIpfsNft.approve(nftMarketplace.address, tokenId)
+    const approvalTx = await randomIpfsNft.approve(nftMarketplace.getAddress(), tokenId)
     await approvalTx.wait(1)
 
     console.log("Listing NFT...")
-    const tx = await nftMarketplace.listItem(randomIpfsNft.address, tokenId, PRICE)
+    const tx = await nftMarketplace.listItem(randomIpfsNft.getAddress(), tokenId, PRICE)
     await tx.wait(1)
     console.log("Listed!")
 }

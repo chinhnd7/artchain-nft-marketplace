@@ -27,7 +27,8 @@ const networkConfig = {
         mintFee: "10000000000000000", // 0.01 ETH
         subscriptionId: "4676", // https://vrf.chain.link/mumbai/new
         gas: 2100000,
-        gasPrice: 8000000000,
+        gasPrice: 5000000000,
+        allowUnlimitedContractSize: true
     },
 }
 
