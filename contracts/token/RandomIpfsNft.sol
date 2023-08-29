@@ -25,9 +25,11 @@ contract RandomIpfsNft is VRFConsumerBaseV2, ERC721URIStorage, Ownable {
 
     // Type Declaration
     enum Breed {
-        UNITY,
-        DUALITY,
-        TRINITY
+        NOVICE,
+        ADEPT,
+        LOREKEEPER,
+        ENIGMA,
+        SERAPH
     }
 
     VRFCoordinatorV2Interface private immutable i_vrfCoordinator;
@@ -92,11 +94,6 @@ contract RandomIpfsNft is VRFConsumerBaseV2, ERC721URIStorage, Ownable {
 
         // What does this token look like?
         uint256 moddedRng = randomWords[0] % MAX_CHANCE_VALUE;
-        // 0-99
-        // 7 -> TRINITY
-        // 12 -> DUALITY
-        // 88 -> UNITY
-        // 45 -> UNITY
 
         Breed nftBreed = getBreedFromModdedRng(moddedRng);
         _safeMint(nftOwner, newTokenId);
@@ -115,11 +112,11 @@ contract RandomIpfsNft is VRFConsumerBaseV2, ERC721URIStorage, Ownable {
 
     function getBreedFromModdedRng(uint256 moddedRng) public pure returns (Breed) {
         uint256 cumulativeSum = 0;
-        uint256[3] memory chanceArray = getChanceArray();
+        uint256[5] memory chanceArray = getChanceArray();
         // moddedRng = 25
-        // i = 1
-        // cumulativeSum = 10
-        // => Breed(1) : Shiba Inu
+        // i = 2
+        // cumulativeSum = 14
+        // => Breed(2) : LOREKEEPER
         for(uint256 i=0; i < chanceArray.length; i++) {
             if (moddedRng >= cumulativeSum && moddedRng < chanceArray[i]) {
                 return Breed(i);
@@ -129,11 +126,13 @@ contract RandomIpfsNft is VRFConsumerBaseV2, ERC721URIStorage, Ownable {
         revert RandomIpfsNft__RangeOutOfBounds();
     }
 
-    function getChanceArray() public pure returns(uint256[3] memory) {
-        return [10, 30, MAX_CHANCE_VALUE];
-        // Pug: 10% [0-9]
-        // Shiba Inu: (30 - 10) % [10-39]
-        // St. Bernard: (100 - 30 - 10) % [40-99]
+    function getChanceArray() public pure returns(uint256[5] memory) {
+        return [4, 14, 29, 49, MAX_CHANCE_VALUE];
+        // SERAPH: 4% [0-3]
+        // ENIGMA: 10% [4-13]
+        // LOREKEEPER: 15% [14-28]
+        // ADEPT: 20% [29-48]
+        // NOVICE: 51% [49-99]
     }
 
     function getMintFee() public view returns(uint256) {
