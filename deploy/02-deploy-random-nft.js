@@ -17,12 +17,13 @@ const metadataTemplate = {
     name: "",
     description: "",
     image: "",
-    attributes: [
+    attributes: 
         {
-            trait_type: "Cuteness",
-            value: 100,
+            trait_type: "ArtChain NFT",
+            collection: "",
+            rank: 0,
         }
-    ],
+    ,
 }
 
 module.exports = async function ({getNamedAccounts, deployments}) {
@@ -88,27 +89,27 @@ module.exports = async function ({getNamedAccounts, deployments}) {
 }
 
 async function handleTokenUris () {
-    // tokenUris = []
-    // // store the Image in IPFS
-    // // store the metadata in IPFS
-    // const {responses: imageUploadResponses, files} = await storeImages(imagesLocation)
+    tokenUris = []
+    // store the Image in IPFS
+    // store the metadata in IPFS
+    const {responses: imageUploadResponses, files} = await storeImages(imagesLocation)
 
-    // for (imageUploadResponseIndex in imageUploadResponses) {
-    //     // create metadata
-    //     // upload the metadata
-    //     let tokenUriMetadata = { ...metadataTemplate }
-    //     // cat-hero.png, fox-hero.png
-    //     tokenUriMetadata.name = files[imageUploadResponseIndex].replace(".png", "")
-    //     tokenUriMetadata.description = `A ${tokenUriMetadata.name} card!`
-    //     tokenUriMetadata.image = `ipfs://${imageUploadResponses[imageUploadResponseIndex].IpfsHash}`
-    //     console.log(`Uploading ${tokenUriMetadata.name}...`)
-    //     // store the JSON to pinata / IPFS
-    //     const metadataUploadResponse = await storeTokenUriMetadata(tokenUriMetadata)
-    //     tokenUris.push(`ipfs://${metadataUploadResponse.IpfsHash}`)
-    // }
-    // console.log("Token URIs Uploaded! They are:")
-    // console.log(tokenUris)
-    // return tokenUris
+    for (imageUploadResponseIndex in imageUploadResponses) {
+        // create metadata
+        // upload the metadata
+        let tokenUriMetadata = { ...metadataTemplate }
+        // cat-hero.png, fox-hero.png
+        tokenUriMetadata.name = files[imageUploadResponseIndex].replace(".png", "")
+        tokenUriMetadata.description = `A ${tokenUriMetadata.name} card!`
+        tokenUriMetadata.image = `ipfs://${imageUploadResponses[imageUploadResponseIndex].IpfsHash}`
+        console.log(`Uploading ${tokenUriMetadata.name}...`)
+        // store the JSON to pinata / IPFS
+        const metadataUploadResponse = await storeTokenUriMetadata(tokenUriMetadata)
+        tokenUris.push(`ipfs://${metadataUploadResponse.IpfsHash}`)
+    }
+    console.log("Token URIs Uploaded! They are:")
+    console.log(tokenUris)
+    return tokenUris
 }
 
 module.exports.tags = ["all", "randomipfs", "main"]

@@ -24,7 +24,7 @@ contract RandomIpfsNft is VRFConsumerBaseV2, ERC721URIStorage, Ownable {
     // the owner of the contract can withdraw the ETH
 
     // Type Declaration
-    enum Breed {
+    enum Rank {
         NOVICE,
         ADEPT,
         LOREKEEPER,
@@ -50,7 +50,7 @@ contract RandomIpfsNft is VRFConsumerBaseV2, ERC721URIStorage, Ownable {
 
     // Events
     event NftRequested(uint256 indexed requestId, address requester);
-    event NftMinted(Breed nftBreed, address minter);
+    event NftMinted(Rank nftRank, address minter);
 
     constructor(
         address vrfCoordinatorV2,
@@ -95,10 +95,10 @@ contract RandomIpfsNft is VRFConsumerBaseV2, ERC721URIStorage, Ownable {
         // What does this token look like?
         uint256 moddedRng = randomWords[0] % MAX_CHANCE_VALUE;
 
-        Breed nftBreed = getBreedFromModdedRng(moddedRng);
+        Rank nftRank = getRankFromModdedRng(moddedRng);
         _safeMint(nftOwner, newTokenId);
-        _setTokenURI(newTokenId, /* that breed's tokenURI */s_nftTokenURIs[uint256(nftBreed)]);
-        emit NftMinted(nftBreed, nftOwner);
+        _setTokenURI(newTokenId, /* that rank's tokenURI */s_nftTokenURIs[uint256(nftRank)]);
+        emit NftMinted(nftRank, nftOwner);
     }
 
     // extend Ownable contract
@@ -110,16 +110,16 @@ contract RandomIpfsNft is VRFConsumerBaseV2, ERC721URIStorage, Ownable {
         }
     }
 
-    function getBreedFromModdedRng(uint256 moddedRng) public pure returns (Breed) {
+    function getRankFromModdedRng(uint256 moddedRng) public pure returns (Rank) {
         uint256 cumulativeSum = 0;
         uint256[5] memory chanceArray = getChanceArray();
         // moddedRng = 25
         // i = 2
         // cumulativeSum = 14
-        // => Breed(2) : LOREKEEPER
+        // => Rank(2) : LOREKEEPER
         for(uint256 i=0; i < chanceArray.length; i++) {
             if (moddedRng >= cumulativeSum && moddedRng < chanceArray[i]) {
-                return Breed(i);
+                return Rank(i);
             }
             cumulativeSum = chanceArray[i];
         }
