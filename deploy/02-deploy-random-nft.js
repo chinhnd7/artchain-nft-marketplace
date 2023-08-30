@@ -6,13 +6,13 @@ const {storeImages, storeTokenUriMetadata, getFolderImages} = require("../utils/
 const imagesFolders = "./images"
 const imagesLocations = getFolderImages(imagesFolders)
 
-
-
-// let tokenUris = [
-//     'ipfs://QmbiSooYqGnafXk73XZTxw5NKgM5gDha9cFCouTPoUfGif',
-//     'ipfs://QmUeapUmuda19ADKS5SqQ1N6ro1n9MCsT6KFm6eYda34JZ',
-//     'ipfs://Qmeys65BmhsDpq6ufYyeNGqwHWNnGRzXdSZpdrLMxakrE9'
-// ]
+let tokenUris = {
+    0: [],
+    1: [],
+    2: [],
+    3: [],
+    4: []
+}
 
 const FUND_AMOUNT = "1000000000000000000000" // 10 LINK
 
@@ -92,7 +92,6 @@ module.exports = async function ({getNamedAccounts, deployments}) {
 }
 
 async function handleTokenUris () {
-    tokenUris = []
 
     // store the Image in IPFS
     // store the metadata in IPFS
@@ -107,17 +106,19 @@ async function handleTokenUris () {
             tokenUriMetadata.name = files[imageUploadResponseIndex].replace(/^\d+_/, '').replace(/\.[^.]+$/, '')
             tokenUriMetadata.description = `A ${tokenUriMetadata.name} card!`
 
-            const collectionParts = imagesLocation.split('/'); // Tách đường dẫn thành các phần
+            const collectionParts = imagesLocation.split("\\"); // Tách đường dẫn thành các phần
             const collection = collectionParts[collectionParts.length - 1];
             tokenUriMetadata.collection = collection.charAt(0).toUpperCase() + folderName.slice(1);
 
             tokenUriMetadata.image = `ipfs://${imageUploadResponses[imageUploadResponseIndex].IpfsHash}`
 
             tokenUriMetadata.attributes.rank = files[imageUploadResponseIndex].match(/^(\d+)_/);
+            const rank = parseInt(tokenUriMetadata.attributes.rank, 10)
+
             console.log(`Uploading ${tokenUriMetadata.name}...`)
             // store the JSON to pinata / IPFS
             const metadataUploadResponse = await storeTokenUriMetadata(tokenUriMetadata)
-            tokenUris.push(`ipfs://${metadataUploadResponse.IpfsHash}`)
+            tokenUris[rank - 1].push(`ipfs://${metadataUploadResponse.IpfsHash}`)
         }
     }
 

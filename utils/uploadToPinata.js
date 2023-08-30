@@ -59,8 +59,7 @@ async function getFolderImages(imagesLocation) {
         if (err) {
         console.error('Error reading directory:', err)
         return;
-        }
-  
+        }  
         // Lọc ra các thư mục từ danh sách các tệp và thêm đường dẫn
         const folderPaths = files
         .filter(file => fs.statSync(path.join(imagesLocation, file)).isDirectory())
