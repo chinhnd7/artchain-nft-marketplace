@@ -15,12 +15,12 @@ const FUND_AMOUNT = "1000000000000000000000" // 10 LINK
 
 const metadataTemplate = {
     name: "",
+    collection: "",
     description: "",
     image: "",
     attributes: 
         {
             trait_type: "ArtChain NFT",
-            collection: "",
             rank: 0,
         }
     ,
