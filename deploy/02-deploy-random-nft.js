@@ -1,15 +1,18 @@
 const {network, ethers} = require("hardhat")
 const {developmentChains, networkConfig} = require("../helper-hardhat-config")
 const {verify} = require("../utils/verify")
-// const {storeImages, storeTokenUriMetadata} = require("../utils/uploadToPinata")
+const {storeImages, storeTokenUriMetadata, getFolderImages} = require("../utils/uploadToPinata")
 
-const imagesLocation = "./images/cardNft"
+const imagesFolders = "./images"
+const imagesLocations = getFolderImages(imagesFolders)
 
-let tokenUris = [
-    'ipfs://QmbiSooYqGnafXk73XZTxw5NKgM5gDha9cFCouTPoUfGif',
-    'ipfs://QmUeapUmuda19ADKS5SqQ1N6ro1n9MCsT6KFm6eYda34JZ',
-    'ipfs://Qmeys65BmhsDpq6ufYyeNGqwHWNnGRzXdSZpdrLMxakrE9'
-]
+
+
+// let tokenUris = [
+//     'ipfs://QmbiSooYqGnafXk73XZTxw5NKgM5gDha9cFCouTPoUfGif',
+//     'ipfs://QmUeapUmuda19ADKS5SqQ1N6ro1n9MCsT6KFm6eYda34JZ',
+//     'ipfs://Qmeys65BmhsDpq6ufYyeNGqwHWNnGRzXdSZpdrLMxakrE9'
+// ]
 
 const FUND_AMOUNT = "1000000000000000000000" // 10 LINK
 
@@ -90,23 +93,34 @@ module.exports = async function ({getNamedAccounts, deployments}) {
 
 async function handleTokenUris () {
     tokenUris = []
+
     // store the Image in IPFS
     // store the metadata in IPFS
-    const {responses: imageUploadResponses, files} = await storeImages(imagesLocation)
+    for (imagesLocation in imagesLocations) {
+        const {responses: imageUploadResponses, files} = await storeImages(imagesLocation)
 
-    for (imageUploadResponseIndex in imageUploadResponses) {
-        // create metadata
-        // upload the metadata
-        let tokenUriMetadata = { ...metadataTemplate }
-        // cat-hero.png, fox-hero.png
-        tokenUriMetadata.name = files[imageUploadResponseIndex].replace(".png", "")
-        tokenUriMetadata.description = `A ${tokenUriMetadata.name} card!`
-        tokenUriMetadata.image = `ipfs://${imageUploadResponses[imageUploadResponseIndex].IpfsHash}`
-        console.log(`Uploading ${tokenUriMetadata.name}...`)
-        // store the JSON to pinata / IPFS
-        const metadataUploadResponse = await storeTokenUriMetadata(tokenUriMetadata)
-        tokenUris.push(`ipfs://${metadataUploadResponse.IpfsHash}`)
+        for (imageUploadResponseIndex in imageUploadResponses) {
+            // create metadata
+            // upload the metadata
+            let tokenUriMetadata = { ...metadataTemplate }
+            // cat-hero.png, fox-hero.png
+            tokenUriMetadata.name = files[imageUploadResponseIndex].replace(/^\d+_/, '').replace(/\.[^.]+$/, '')
+            tokenUriMetadata.description = `A ${tokenUriMetadata.name} card!`
+
+            const collectionParts = imagesLocation.split('/'); // Tách đường dẫn thành các phần
+            const collection = collectionParts[collectionParts.length - 1];
+            tokenUriMetadata.collection = collection.charAt(0).toUpperCase() + folderName.slice(1);
+
+            tokenUriMetadata.image = `ipfs://${imageUploadResponses[imageUploadResponseIndex].IpfsHash}`
+
+            tokenUriMetadata.attributes.rank = files[imageUploadResponseIndex].match(/^(\d+)_/);
+            console.log(`Uploading ${tokenUriMetadata.name}...`)
+            // store the JSON to pinata / IPFS
+            const metadataUploadResponse = await storeTokenUriMetadata(tokenUriMetadata)
+            tokenUris.push(`ipfs://${metadataUploadResponse.IpfsHash}`)
+        }
     }
+
     console.log("Token URIs Uploaded! They are:")
     console.log(tokenUris)
     return tokenUris
