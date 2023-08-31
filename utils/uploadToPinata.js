@@ -8,7 +8,9 @@ const pinataApiSecret = process.env.PINATA_API_SECRET
 const pinata = new pinataSDK(pinataApiKey, pinataApiSecret)
 
 async function storeImages(imagesFilePath) {
+    console.log("imagesFilePath", imagesFilePath)
     const fullImagesPath = path.resolve(imagesFilePath)
+    console.log("imagesFilePath", imagesFilePath)
 
     // Filter the files in case the are a file that in not a .png
     const files = fs.readdirSync(fullImagesPath).filter((file) => file.includes(".png"))
@@ -55,18 +57,19 @@ async function storeTokenUriMetadata(metadata) {
 }
 
 async function getFolderImages(imagesLocation) {
-    fs.readdir(imagesLocation, (err, files) => {
-        if (err) {
-        console.error('Error reading directory:', err)
-        return;
-        }  
-        // Lọc ra các thư mục từ danh sách các tệp và thêm đường dẫn
-        const folderPaths = files
-        .filter(file => fs.statSync(path.join(imagesLocation, file)).isDirectory())
-        .map(folder => path.join(imagesLocation, folder))
+    return new Promise((resolve, reject) => {
+        fs.readdir(imagesLocation, (err, files) => {
+            if (err) {
+                console.error('Error reading directory:', err)
+                return;
+            }  
+            // Lọc ra các thư mục từ danh sách các tệp và thêm đường dẫn
+            const folderPaths = files
+            .filter(file => fs.statSync(path.join(imagesLocation, file)).isDirectory())
+            .map(folder => path.join(imagesLocation, folder))
   
-        console.log(folderPaths)
-        return folderPaths
+            resolve(folderPaths)
+        })
     })
 }
 

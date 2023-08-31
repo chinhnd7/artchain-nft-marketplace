@@ -4,14 +4,28 @@ const {verify} = require("../utils/verify")
 const {storeImages, storeTokenUriMetadata, getFolderImages} = require("../utils/uploadToPinata")
 
 const imagesFolders = "./images"
-const imagesLocations = getFolderImages(imagesFolders)
 
 let tokenUris = {
-    0: [],
-    1: [],
-    2: [],
-    3: [],
-    4: []
+    '0': [
+      'ipfs://QmeraCe8D6UgitwZKkGAZA4ZRMoXrHMcj8RfRLXQAbVLHy',
+      'ipfs://QmUvVdSGaiaLZFLFN4nESfuxfGPisDuxrNeCS5aWx1fCHc'
+    ],
+    '1': [
+      'ipfs://QmWADBZnxfYwNiSJcYagFdTJHVmkbEKsWqAxHsn3Pf5JTo',
+      'ipfs://QmXM4bwoK8FTDGbW87kXtH6PrFS1SndLoxdrWTrr5hCtkG'
+    ],
+    '2': [
+      'ipfs://QmVtJP9ErQYsqPZ1kUQ5MHP83ne2iefqg9h2bbjgXFSnKd',
+      'ipfs://QmU7HKZsNgnkhTjyX9NY6At8tW7e44dTzvChWSYxMnTUDK'
+    ],
+    '3': [
+      'ipfs://QmQa2odjVqCjUo1QKKyVABmKogqAf4uTkbN1uzmcBpPY4k',
+      'ipfs://QmezXmwCYtXVw3aAebgp7HUibXfcbs1TcaocdY3jqNDhVm'
+    ],
+    '4': [
+      'ipfs://QmVtxvizysdvVJQvj37asB6Kjz6iZ5beDtpyRugzpikFyx',
+      'ipfs://QmPLMBy4AMbgrRGDmb2vKrD8wS4aRHYDPydpphjeMQnMkX'
+    ]
 }
 
 const FUND_AMOUNT = "1000000000000000000000" // 10 LINK
@@ -24,7 +38,7 @@ const metadataTemplate = {
     attributes: 
         {
             trait_type: "ArtChain NFT",
-            rank: 0,
+            rank: "0",
         }
     ,
 }
@@ -93,26 +107,33 @@ module.exports = async function ({getNamedAccounts, deployments}) {
 
 async function handleTokenUris () {
 
+    const folderLocations = await getFolderImages(imagesFolders)
+    const folderLocationsFormatted = folderLocations.map(folderPath => `./${folderPath.replace(/\\/g, '/')}`)
+    console.log("folderLocationsFormatted", folderLocationsFormatted)
+
     // store the Image in IPFS
     // store the metadata in IPFS
-    for (imagesLocation in imagesLocations) {
+    for (imagesLocation of folderLocationsFormatted) {
+        console.log("imagesLocation", imagesLocation)
         const {responses: imageUploadResponses, files} = await storeImages(imagesLocation)
 
         for (imageUploadResponseIndex in imageUploadResponses) {
             // create metadata
             // upload the metadata
             let tokenUriMetadata = { ...metadataTemplate }
-            // cat-hero.png, fox-hero.png
+            
             tokenUriMetadata.name = files[imageUploadResponseIndex].replace(/^\d+_/, '').replace(/\.[^.]+$/, '')
             tokenUriMetadata.description = `A ${tokenUriMetadata.name} card!`
 
-            const collectionParts = imagesLocation.split("\\"); // Tách đường dẫn thành các phần
+            const collectionParts = imagesLocation.split("/"); // Tách đường dẫn thành các phần
             const collection = collectionParts[collectionParts.length - 1];
-            tokenUriMetadata.collection = collection.charAt(0).toUpperCase() + folderName.slice(1);
+            tokenUriMetadata.collection = `${collection.charAt(0).toUpperCase() + collection.slice(1)}`
 
             tokenUriMetadata.image = `ipfs://${imageUploadResponses[imageUploadResponseIndex].IpfsHash}`
 
-            tokenUriMetadata.attributes.rank = files[imageUploadResponseIndex].match(/^(\d+)_/);
+            let indexRank = files[imageUploadResponseIndex].indexOf("_");
+            tokenUriMetadata.attributes.rank = files[imageUploadResponseIndex].substring(0, indexRank)
+
             const rank = parseInt(tokenUriMetadata.attributes.rank, 10)
 
             console.log(`Uploading ${tokenUriMetadata.name}...`)

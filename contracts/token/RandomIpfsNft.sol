@@ -37,7 +37,7 @@ contract RandomIpfsNft is VRFConsumerBaseV2, ERC721URIStorage, Ownable {
     bytes32 private immutable i_gasLane;
     uint32 private immutable i_callbackGasLimit;
     uint16 private constant REQUEST_CONFIRMATIONS = 3;
-    uint32 private constant NUM_WORDS = 1;
+    uint32 private constant NUM_WORDS = 2;
 
     // VRF Helpers
     mapping(uint256 => address) public s_requestIdToSender;
@@ -45,7 +45,7 @@ contract RandomIpfsNft is VRFConsumerBaseV2, ERC721URIStorage, Ownable {
     // NFT Variables
     uint256 public s_tokenCounter;
     uint256 internal constant MAX_CHANCE_VALUE = 100;
-    string[] internal s_nftTokenURIs;
+    mapping (uint256 => string[]) internal s_nftTokenURIs;
     uint256 internal immutable i_mintFree;
 
     // Events
@@ -57,14 +57,18 @@ contract RandomIpfsNft is VRFConsumerBaseV2, ERC721URIStorage, Ownable {
         uint64 subcriptionId,
         bytes32 gasLane,
         uint32 callbackGasLimit,
-        string[3] memory nftTokenURIs,
+        string[5][] memory nftTokenURIs,
         uint256 mintFee
         ) VRFConsumerBaseV2(vrfCoordinatorV2) ERC721("Random IPFS NFT", "RIN"){
         i_vrfCoordinator = VRFCoordinatorV2Interface(vrfCoordinatorV2);
         i_subcriptionId = subcriptionId;
         i_gasLane = gasLane;
         i_callbackGasLimit = callbackGasLimit;
-        s_nftTokenURIs = nftTokenURIs;
+        s_nftTokenURIs[0] = nftTokenURIs[0];
+        s_nftTokenURIs[1] = nftTokenURIs[1];
+        s_nftTokenURIs[2] = nftTokenURIs[2];
+        s_nftTokenURIs[3] = nftTokenURIs[3];
+        s_nftTokenURIs[4] = nftTokenURIs[4];
         i_mintFree = mintFee;
         s_tokenCounter = 0;
     }
@@ -96,8 +100,11 @@ contract RandomIpfsNft is VRFConsumerBaseV2, ERC721URIStorage, Ownable {
         uint256 moddedRng = randomWords[0] % MAX_CHANCE_VALUE;
 
         Rank nftRank = getRankFromModdedRng(moddedRng);
+
+        uint256 nftIndex = randomWords[1] % (s_nftTokenURIs[uint256(nftRank)].length);
+        
         _safeMint(nftOwner, newTokenId);
-        _setTokenURI(newTokenId, /* that rank's tokenURI */s_nftTokenURIs[uint256(nftRank)]);
+        _setTokenURI(newTokenId, /* that rank's tokenURI */s_nftTokenURIs[uint256(nftRank)][nftIndex]);
         emit NftMinted(nftRank, nftOwner);
     }
 
@@ -139,8 +146,8 @@ contract RandomIpfsNft is VRFConsumerBaseV2, ERC721URIStorage, Ownable {
         return i_mintFree;
     }
 
-    function getNftTokenUris(uint256 index) public view returns (string memory) {
-        return s_nftTokenURIs[index];
+    function getNftTokenUris(uint256 rankNumber, uint256 index) public view returns (string memory) {
+        return s_nftTokenURIs[rankNumber][index];
     }
 
     function getTokenCounter() public view returns (uint256) {
