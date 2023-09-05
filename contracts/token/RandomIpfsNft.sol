@@ -126,7 +126,7 @@ contract RandomIpfsNft is VRFConsumerBaseV2, ERC721URIStorage, Ownable {
         // => Rank(2) : LOREKEEPER
         for(uint256 i=0; i < chanceArray.length; i++) {
             if (moddedRng >= cumulativeSum && moddedRng < chanceArray[i]) {
-                return Rank(i);
+                return Rank(chanceArray.length - 1 - i);
             }
             cumulativeSum = chanceArray[i];
         }

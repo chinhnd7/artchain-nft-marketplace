@@ -5,28 +5,28 @@ const {storeImages, storeTokenUriMetadata, getFolderImages} = require("../utils/
 
 const imagesFolders = "./images"
 
-let tokenUris = {
-    '0': [
-      'ipfs://QmeraCe8D6UgitwZKkGAZA4ZRMoXrHMcj8RfRLXQAbVLHy',
-      'ipfs://QmUvVdSGaiaLZFLFN4nESfuxfGPisDuxrNeCS5aWx1fCHc'
+const tokenUris = [
+    [
+      "ipfs://QmeraCe8D6UgitwZKkGAZA4ZRMoXrHMcj8RfRLXQAbVLHy",
+      "ipfs://QmUvVdSGaiaLZFLFN4nESfuxfGPisDuxrNeCS5aWx1fCHc",
     ],
-    '1': [
-      'ipfs://QmWADBZnxfYwNiSJcYagFdTJHVmkbEKsWqAxHsn3Pf5JTo',
-      'ipfs://QmXM4bwoK8FTDGbW87kXtH6PrFS1SndLoxdrWTrr5hCtkG'
+    [
+      "ipfs://QmWADBZnxfYwNiSJcYagFdTJHVmkbEKsWqAxHsn3Pf5JTo",
+      "ipfs://QmXM4bwoK8FTDGbW87kXtH6PrFS1SndLoxdrWTrr5hCtkG"
     ],
-    '2': [
-      'ipfs://QmVtJP9ErQYsqPZ1kUQ5MHP83ne2iefqg9h2bbjgXFSnKd',
-      'ipfs://QmU7HKZsNgnkhTjyX9NY6At8tW7e44dTzvChWSYxMnTUDK'
+    [
+      "ipfs://QmVtJP9ErQYsqPZ1kUQ5MHP83ne2iefqg9h2bbjgXFSnKd",
+      "ipfs://QmU7HKZsNgnkhTjyX9NY6At8tW7e44dTzvChWSYxMnTUDK"
     ],
-    '3': [
-      'ipfs://QmQa2odjVqCjUo1QKKyVABmKogqAf4uTkbN1uzmcBpPY4k',
-      'ipfs://QmezXmwCYtXVw3aAebgp7HUibXfcbs1TcaocdY3jqNDhVm'
+    [
+      "ipfs://QmQa2odjVqCjUo1QKKyVABmKogqAf4uTkbN1uzmcBpPY4k",
+      "ipfs://QmezXmwCYtXVw3aAebgp7HUibXfcbs1TcaocdY3jqNDhVm"
     ],
-    '4': [
-      'ipfs://QmVtxvizysdvVJQvj37asB6Kjz6iZ5beDtpyRugzpikFyx',
-      'ipfs://QmPLMBy4AMbgrRGDmb2vKrD8wS4aRHYDPydpphjeMQnMkX'
+    [
+      "ipfs://QmVtxvizysdvVJQvj37asB6Kjz6iZ5beDtpyRugzpikFyx",
+      "ipfs://QmPLMBy4AMbgrRGDmb2vKrD8wS4aRHYDPydpphjeMQnMkX"
     ]
-}
+]
 
 const FUND_AMOUNT = "1000000000000000000000" // 10 LINK
 
