@@ -28,7 +28,6 @@ const networkConfig = {
         subscriptionId: "4676", // https://vrf.chain.link/mumbai/new
         gas: 2100000,
         gasPrice: 5000000000,
-        allowUnlimitedContractSize: true
     },
 }
 
