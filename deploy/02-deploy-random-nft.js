@@ -8,7 +8,7 @@ const imagesFolders = "./images"
 const tokenUris = [
     [
       "ipfs://QmeraCe8D6UgitwZKkGAZA4ZRMoXrHMcj8RfRLXQAbVLHy",
-      "ipfs://QmUvVdSGaiaLZFLFN4nESfuxfGPisDuxrNeCS5aWx1fCHc",
+      "ipfs://QmUvVdSGaiaLZFLFN4nESfuxfGPisDuxrNeCS5aWx1fCHc"
     ],
     [
       "ipfs://QmWADBZnxfYwNiSJcYagFdTJHVmkbEKsWqAxHsn3Pf5JTo",
@@ -99,6 +99,13 @@ module.exports = async function ({getNamedAccounts, deployments}) {
 
     if (network.name == "mumbai") {
         if (process.env.MUMBAI_API_KEY) {
+            log("Verifying...")
+            await verify(randomIpfsNft.address, args)
+        }
+    }
+
+    if (network.name == "sepolia") {
+        if (process.env.ETHERSCAN_API_KEY) {
             log("Verifying...")
             await verify(randomIpfsNft.address, args)
         }

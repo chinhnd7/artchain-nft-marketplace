@@ -57,7 +57,7 @@ contract RandomIpfsNft is VRFConsumerBaseV2, ERC721URIStorage, Ownable {
         uint64 subcriptionId,
         bytes32 gasLane,
         uint32 callbackGasLimit,
-        string[5][] memory nftTokenURIs,
+        string[][5] memory nftTokenURIs,
         uint256 mintFee
         ) VRFConsumerBaseV2(vrfCoordinatorV2) ERC721("Random IPFS NFT", "RIN"){
         i_vrfCoordinator = VRFCoordinatorV2Interface(vrfCoordinatorV2);
